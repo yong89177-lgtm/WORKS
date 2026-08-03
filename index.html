@@ -1,0 +1,494 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#0a0a0c" />
+  <title>AIMS · 생산기술혁신센터 PACK기술그룹</title>
+  <meta name="description" content="PACK기술그룹에서 만든 AI Agent를 한 곳에서 공유하는 통합 AI 플랫폼 AIMS입니다." />
+
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><defs><linearGradient id='g' x1='0' y1='0' x2='1' y2='1'><stop offset='0%25' stop-color='%235b6cff'/><stop offset='100%25' stop-color='%2334d0c9'/></linearGradient></defs><rect width='100' height='100' rx='22' fill='url(%23g)'/><text x='50' y='68' text-anchor='middle' font-family='Arial' font-size='50' font-weight='900' fill='white'>AI</text></svg>" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
+
+  <link rel="stylesheet" href="assets/style.css?v=12" />
+</head>
+<body>
+
+  <!-- ================== 헤더 (검색창 + 로고/내비게이션) ================== -->
+  <header class="site-header">
+    <div class="header-search-row">
+      <div class="container">
+        <div class="header-search">
+          <i class="fa-solid fa-magnifying-glass"></i>
+          <input type="text" id="searchInput" placeholder="AI Agent 이름, 역할, 팀으로 검색..." autocomplete="off" />
+          <span class="search-hint" id="searchHint" style="display:none;"></span>
+        </div>
+      </div>
+    </div>
+    <div class="header-nav-row">
+      <div class="container nav-row-inner">
+        <a href="#" class="brand">
+          <span class="brand-mark"><i class="fa-solid fa-robot"></i></span>
+          <span>AIMS</span>
+        </a>
+        <nav class="top-nav" id="topNav">
+          <a href="#dashboard" class="top-nav-link active" data-target="dashboard">대시보드</a>
+          <a href="#curatedSection" class="top-nav-link" data-target="curatedSection">추천현황</a>
+          <a href="#agents" class="top-nav-link" data-target="agents">AI Agent 라이브러리</a>
+          <a href="#community" class="top-nav-link" data-target="community">자유게시판</a>
+        </nav>
+      </div>
+    </div>
+  </header>
+
+      <!-- ================== 대시보드 / 히어로 ================== -->
+      <section class="section dashboard-section" id="dashboard">
+        <div class="container">
+          <div class="section-header">
+            <div class="hero-heading">
+              <h1 class="page-title">생산기술의 미래를 이끄는<br><span class="title-highlight">통합 AI 플랫폼</span></h1>
+              <p class="page-subtitle">AIMS<span class="page-title-en">(AI Innovation Manufacturing System)</span></p>
+              <p class="section-sub">우리 센터에서 만든 AI Agent를 한 곳에서 찾아보세요. 어떤 Agent가 필요한지 모르겠다면 AI 매니저에게 추천을 받아보세요.</p>
+            </div>
+          </div>
+
+          <div class="hero-cta-row">
+            <button type="button" class="manager-trigger-btn" id="openRecommendModal">
+              <i class="fa-solid fa-user-tie"></i> AI 매니저 추천
+            </button>
+            <button type="button" class="upload-trigger-btn" id="openUploadModal">
+              <i class="fa-solid fa-cloud-arrow-up"></i> AI Agent 등록
+            </button>
+          </div>
+
+          <div class="hero-bottom-row">
+            <div class="stat-badge-row">
+              <div class="stat-badge">
+                <div class="stat-badge-icon stat-icon-1"><i class="fa-solid fa-robot"></i></div>
+                <div class="stat-badge-num" id="statAgentCount">-</div>
+                <div class="stat-badge-label">전체 Agent</div>
+              </div>
+              <div class="stat-badge">
+                <div class="stat-badge-icon stat-icon-2"><i class="fa-solid fa-people-group"></i></div>
+                <div class="stat-badge-num" id="statTeamCount">-</div>
+                <div class="stat-badge-label">참여 팀</div>
+              </div>
+              <div class="stat-badge">
+                <div class="stat-badge-icon stat-icon-3"><i class="fa-solid fa-tags"></i></div>
+                <div class="stat-badge-num" id="statCategoryCount">-</div>
+                <div class="stat-badge-label">카테고리</div>
+              </div>
+              <div class="stat-badge">
+                <div class="stat-badge-icon stat-icon-4"><i class="fa-solid fa-star"></i></div>
+                <div class="stat-badge-num" id="statFavorites">0</div>
+                <div class="stat-badge-label">내 즐겨찾기</div>
+              </div>
+            </div>
+
+            <div class="hero-notice-panel">
+              <div class="hero-notice-header">
+                <h3><i class="fa-solid fa-bullhorn"></i> 공지사항</h3>
+                <button type="button" class="hero-notice-write-btn" id="openNoticeModal">글쓰기</button>
+              </div>
+              <div class="hero-notice-table-head">
+                <span>제목</span>
+                <span>작성일</span>
+              </div>
+              <div class="hero-notice-list" id="noticeList"><!-- JS 렌더링 --></div>
+            </div>
+          </div>
+
+          <div class="category-breakdown-card">
+            <h3><i class="fa-solid fa-chart-simple"></i> 카테고리별 현황</h3>
+            <div class="cat-bar-cols" id="categoryBreakdown">
+              <!-- JS로 렌더링 -->
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================== 추천현황 (오늘의 추천 / 신규 / Top 5) ================== -->
+      <div id="curatedSection">
+        <section class="section carousel-section" id="curatedToday" style="display:none;">
+          <div class="container">
+            <h2 class="section-title"><i class="fa-solid fa-sparkles"></i> 오늘의 추천 AI Agent</h2>
+            <div class="carousel-row" id="curatedTodayRow"></div>
+          </div>
+        </section>
+
+        <section class="section carousel-section" id="curatedNew" style="display:none;">
+          <div class="container">
+            <h2 class="section-title"><i class="fa-solid fa-seedling"></i> 신규 AI Agent</h2>
+            <div class="carousel-row" id="curatedNewRow"></div>
+          </div>
+        </section>
+
+        <section class="section carousel-section" id="curatedTop5" style="display:none;">
+          <div class="container">
+            <h2 class="section-title"><i class="fa-solid fa-ranking-star"></i> Top 5</h2>
+            <div class="carousel-row" id="curatedTop5Row"></div>
+          </div>
+        </section>
+      </div>
+
+      <!-- ================== AI Agent 라이브러리 ================== -->
+      <section class="section" id="agents">
+        <div class="container">
+          <div class="section-header">
+            <div>
+              <h2 class="section-title"><i class="fa-solid fa-layer-group"></i> AI Agent 라이브러리</h2>
+              <p class="section-sub">카드를 클릭하면 해당 Agent를 바로 실행해볼 수 있습니다.</p>
+            </div>
+            <div class="filter-bar">
+              <button class="filter-btn active" data-sort="default">최신순</button>
+              <button class="filter-btn" data-sort="popular">인기순</button>
+            </div>
+          </div>
+
+          <div class="toolbar-row">
+            <div class="category-filter-bar" id="categoryFilterBar">
+              <button type="button" class="category-filter-btn active" data-category="all">전체</button>
+              <button type="button" class="category-filter-btn" data-category="기술개발도출지원">기술개발도출지원</button>
+              <button type="button" class="category-filter-btn" data-category="이슈원인분석">이슈원인분석</button>
+              <button type="button" class="category-filter-btn" data-category="MRM 과제운영">MRM 과제운영</button>
+              <button type="button" class="category-filter-btn" data-category="제품개발 프로세스">제품개발 프로세스</button>
+            </div>
+            <button type="button" class="favorites-toggle-btn" id="favoritesToggle">
+              <i class="fa-regular fa-star"></i> 즐겨찾기만 보기
+            </button>
+          </div>
+
+          <div class="grid" id="grid">
+            <!-- 카드가 JS로 렌더링됩니다 -->
+          </div>
+        </div>
+      </section>
+
+      <!-- ================== 자유게시판 ================== -->
+      <section class="section" id="community">
+        <div class="container">
+          <div class="community-grid">
+
+            <!-- 자유게시판 -->
+            <div class="community-col">
+              <div class="community-col-header">
+                <h2 class="section-title-sm"><i class="fa-solid fa-comments"></i> 자유게시판</h2>
+              </div>
+              <div class="board-write-box">
+                <form id="postForm">
+                  <input type="text" id="postTitle" class="fb-form-input" placeholder="제목" maxlength="200" required>
+                  <textarea id="postContent" class="fb-form-textarea" placeholder="내용을 입력하세요" maxlength="2000" required></textarea>
+                  <div class="board-write-footer">
+                    <input type="text" id="postAuthor" class="fb-form-input board-author-input" placeholder="작성자 (선택, 비우면 '익명')" maxlength="100">
+                    <button type="submit" class="board-submit-btn"><i class="fa-solid fa-paper-plane"></i> 등록</button>
+                  </div>
+                </form>
+              </div>
+              <div class="board-list" id="postList"><!-- JS 렌더링 --></div>
+              <div class="board-pagination" id="postPagination" style="display:none;">
+                <button type="button" class="page-btn" id="prevPageBtn"><i class="fa-solid fa-chevron-left"></i></button>
+                <span class="page-info" id="pageInfo"></span>
+                <button type="button" class="page-btn" id="nextPageBtn"><i class="fa-solid fa-chevron-right"></i></button>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </section>
+
+      <!-- ================== 푸터 ================== -->
+      <footer class="site-footer">
+        <div class="container">
+          <div class="footer-row">
+            <span>© AIMS</span>
+            <span>·</span>
+            <span>Built on XAMPP</span>
+            <span>·</span>
+            <span>© 생산기술혁신센터 PACK기술그룹</span>
+          </div>
+        </div>
+      </footer>
+
+  <!-- ================== 모달 (뷰어) ================== -->
+  <div class="modal-backdrop" id="modal" role="dialog" aria-modal="true" aria-label="Agent 뷰어">
+    <div class="modal">
+      <div class="modal-header">
+        <h3 class="modal-title" id="modalTitle">
+          <span class="icon"><i class="fa-solid fa-robot"></i></span>
+          <span>Agent</span>
+        </h3>
+        <div class="modal-actions">
+          <a href="#" target="_blank" rel="noopener" class="icon-btn" id="modalOpenNew" title="새 탭에서 열기">
+            <i class="fa-solid fa-up-right-from-square"></i>
+          </a>
+          <button class="icon-btn close" id="modalClose" title="닫기 (ESC)">
+            <i class="fa-solid fa-xmark"></i>
+          </button>
+        </div>
+      </div>
+      <div class="modal-frame-wrap">
+        <iframe id="modalFrame" class="modal-frame" src="about:blank" allowfullscreen></iframe>
+      </div>
+      <div class="modal-footer" id="modalFooter">
+        <span class="meta">로딩 중…</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================== 게시글 상세 모달 (자유게시판) ================== -->
+  <div class="post-modal-backdrop" id="postModal">
+    <div class="post-modal" role="dialog" aria-modal="true" aria-label="게시글 보기">
+      <div class="post-modal-header">
+        <h3 id="postModalTitle">제목</h3>
+        <button class="upload-close-btn" id="closePostModal"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <div class="post-modal-meta" id="postModalMeta"></div>
+      <div class="post-modal-body" id="postModalContent"></div>
+    </div>
+  </div>
+
+  <!-- ================== 공지사항 상세 모달 ================== -->
+  <div class="post-modal-backdrop" id="noticeViewModal">
+    <div class="post-modal" role="dialog" aria-modal="true" aria-label="공지사항 보기">
+      <div class="post-modal-header">
+        <h3 id="noticeViewTitle">제목</h3>
+        <button class="upload-close-btn" id="closeNoticeViewModal"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <div class="post-modal-meta" id="noticeViewMeta"></div>
+      <div class="post-modal-body" id="noticeViewContent"></div>
+    </div>
+  </div>
+
+  <!-- ================== 공지사항 작성 모달 ================== -->
+  <div class="notice-modal-backdrop" id="noticeModal">
+    <div class="notice-modal" role="dialog" aria-modal="true" aria-label="공지사항 작성">
+      <div class="upload-modal-header">
+        <h3><i class="fa-solid fa-bullhorn"></i> 공지사항 작성</h3>
+        <button class="upload-close-btn" id="closeNoticeModal"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <div class="upload-modal-body">
+        <form id="noticeForm">
+          <div class="upload-form-group">
+            <label class="fb-form-label" for="noticeTitle">제목<span class="required">*</span></label>
+            <input type="text" id="noticeTitle" class="fb-form-input" placeholder="제목" maxlength="200" required>
+          </div>
+          <div class="upload-form-group">
+            <label class="fb-form-label" for="noticeContent">내용<span class="required">*</span></label>
+            <textarea id="noticeContent" class="fb-form-textarea" placeholder="내용을 입력하세요" maxlength="2000" required></textarea>
+          </div>
+          <div class="upload-form-group">
+            <label class="fb-form-label" for="noticeAuthor">작성자</label>
+            <input type="text" id="noticeAuthor" class="fb-form-input" placeholder="작성자 (선택, 비우면 '관리자')" maxlength="100">
+          </div>
+          <button type="submit" class="upload-submit-btn" id="noticeSubmitBtn">
+            <i class="fa-solid fa-paper-plane"></i>
+            <span>등록하기</span>
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================== AI 매니저 추천 모달 ================== -->
+  <div class="recommend-modal-backdrop" id="recommendModal">
+    <div class="recommend-modal" role="dialog" aria-modal="true" aria-label="AI 매니저 추천">
+      <div class="upload-modal-header">
+        <h3><i class="fa-solid fa-user-tie"></i> AI 매니저에게 추천받기</h3>
+        <button class="upload-close-btn" id="closeRecommendModal"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <div class="upload-modal-body">
+        <div class="upload-info-box">
+          <i class="fa-solid fa-circle-info"></i>
+          <p>간단한 정보와 필요한 업무를 적어주시면, 라이브러리에 등록된 디지털 팀원 중 가장 어울리는 Agent를 찾아드립니다.</p>
+        </div>
+
+        <form id="recommendForm">
+          <div class="upload-form-row">
+            <div class="upload-form-group">
+              <label class="fb-form-label" for="recName">이름</label>
+              <input type="text" id="recName" class="fb-form-input" placeholder="홍길동 (선택)" maxlength="100">
+            </div>
+            <div class="upload-form-group">
+              <label class="fb-form-label" for="recOrgTeam">소속 팀</label>
+              <input type="text" id="recOrgTeam" class="fb-form-input" placeholder="팀명 (선택)" maxlength="100">
+            </div>
+          </div>
+
+          <div class="upload-form-group">
+            <label class="fb-form-label" for="recNeedText">어떤 도움이 필요하신가요?<span class="required">*</span></label>
+            <textarea id="recNeedText" class="fb-form-textarea" placeholder="예: 설비 이슈가 생겼는데 원인 분석을 도와줄 Agent가 필요해요" maxlength="500" required></textarea>
+          </div>
+
+          <button type="submit" class="upload-submit-btn" id="recSubmitBtn">
+            <i class="fa-solid fa-magnifying-glass"></i>
+            <span>Agent 추천받기</span>
+          </button>
+        </form>
+
+        <div class="recommend-results" id="recommendResults" style="display:none;">
+          <h4 id="recommendResultsTitle"></h4>
+          <div class="recommend-result-list" id="recommendResultList"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================== 토스트 ================== -->
+  <div class="toast-container" id="toastContainer"></div>
+
+  <!-- =================== 피드백 요청 버튼 =================== -->
+  <button class="feedback-trigger-btn" id="openFeedbackModal">
+    <i class="fa-solid fa-comment-medical"></i>
+    <span>요청사항 보내기</span>
+  </button>
+
+  <!-- =================== 업로드 모달 (Agent 등록) =================== -->
+  <div class="upload-modal-backdrop" id="uploadModal">
+    <div class="upload-modal" role="dialog" aria-modal="true" aria-label="AI Agent 등록">
+      <div class="upload-modal-header">
+        <h3><i class="fa-solid fa-cloud-arrow-up"></i> AI Agent 등록</h3>
+        <button class="upload-close-btn" id="closeUploadModal"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <div class="upload-modal-body">
+        <div class="upload-info-box">
+          <i class="fa-solid fa-circle-info"></i>
+          <p>HTML 파일을 이 페이지에 <strong>드래그 앤 드롭</strong>하거나, 아래에서 선택하세요. 등록하면 바로 라이브러리에 카드로 표시됩니다.</p>
+        </div>
+
+        <form id="uploadForm">
+          <div class="upload-drop-zone" id="dropZone">
+            <input type="file" id="fileInput" name="html_file" accept=".html,.htm" hidden />
+            <div class="drop-zone-content">
+              <i class="fa-solid fa-file-code"></i>
+              <p><strong>HTML 파일을 드래그하세요</strong></p>
+              <p class="upload-hint">또는 클릭하여 파일 선택 (최대 5MB)</p>
+            </div>
+          </div>
+
+          <div class="file-selected" id="fileSelected" style="display:none;">
+            <i class="fa-solid fa-file-lines"></i>
+            <span id="fileName">-</span>
+            <button type="button" id="removeFile" class="remove-file-btn"><i class="fa-solid fa-xmark"></i></button>
+          </div>
+
+          <div class="upload-form-group">
+            <label class="fb-form-label" for="uploadTitle">Agent 이름<span class="required">*</span></label>
+            <input type="text" id="uploadTitle" class="fb-form-input" placeholder="예: 이슈 원인 자동 분석기" required maxlength="255">
+          </div>
+
+          <div class="upload-form-group">
+            <label class="fb-form-label" for="uploadCategory">카테고리<span class="required">*</span></label>
+            <select id="uploadCategory" class="fb-form-input" required>
+              <option value="">카테고리 선택</option>
+              <option value="기술개발도출지원">기술개발도출지원</option>
+              <option value="이슈원인분석">이슈원인분석</option>
+              <option value="MRM 과제운영">MRM 과제운영</option>
+              <option value="제품개발 프로세스">제품개발 프로세스</option>
+            </select>
+          </div>
+
+          <div class="upload-form-group">
+            <label class="fb-form-label" for="uploadRoleTitle">역할명</label>
+            <input type="text" id="uploadRoleTitle" class="fb-form-input" placeholder="예: 이슈 분석 수석 봇 (비우면 카테고리 기본값 사용)" maxlength="100">
+          </div>
+
+          <div class="upload-form-group">
+            <label class="fb-form-label" for="uploadPersonaIntro">한 줄 소개</label>
+            <input type="text" id="uploadPersonaIntro" class="fb-form-input" placeholder="예: 이슈 분석을 책임지는 Agent입니다." maxlength="300">
+          </div>
+
+          <div class="upload-form-group">
+            <label class="fb-form-label" for="uploadDescription">설명</label>
+            <textarea id="uploadDescription" class="fb-form-textarea" placeholder="Agent가 하는 일에 대한 간단한 설명 (선택)" maxlength="500"></textarea>
+          </div>
+
+          <div class="upload-form-row">
+            <div class="upload-form-group">
+              <label class="fb-form-label" for="uploadOrgGroup">그룹</label>
+              <input type="text" id="uploadOrgGroup" class="fb-form-input" placeholder="예: PACK기술그룹" maxlength="100">
+            </div>
+            <div class="upload-form-group">
+              <label class="fb-form-label" for="uploadOrgDept">담당</label>
+              <input type="text" id="uploadOrgDept" class="fb-form-input" placeholder="담당명 (선택)" maxlength="100">
+            </div>
+            <div class="upload-form-group">
+              <label class="fb-form-label" for="uploadOrgTeam">팀</label>
+              <input type="text" id="uploadOrgTeam" class="fb-form-input" placeholder="팀명 (선택)" maxlength="100">
+            </div>
+          </div>
+
+          <div class="upload-form-group">
+            <label class="fb-form-label" for="uploadUploader">등록자<span class="required">*</span></label>
+            <input type="text" id="uploadUploader" class="fb-form-input" placeholder="홍길동 (비공개 시 '익명')" required maxlength="100">
+          </div>
+
+          <button type="submit" class="upload-submit-btn" id="uploadSubmitBtn">
+            <i class="fa-solid fa-cloud-arrow-up"></i>
+            <span>등록하기</span>
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- =================== 피드백 모달 =================== -->
+  <div class="feedback-modal-backdrop" id="feedbackModal">
+    <div class="feedback-modal" role="dialog" aria-modal="true" aria-label="요청사항 보내기">
+      <div class="feedback-modal-header">
+        <h3><i class="fa-solid fa-comment-medical"></i> 요청사항 보내기</h3>
+        <button class="feedback-close-btn" id="closeFeedbackModal"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <div class="feedback-modal-body">
+        <form id="feedbackForm">
+          <div class="fb-form-group">
+            <label class="fb-form-label" for="fbName">이름<span class="required">*</span></label>
+            <input type="text" id="fbName" class="fb-form-input" placeholder="홍길동" required maxlength="100">
+          </div>
+
+          <div class="fb-form-group">
+            <label class="fb-form-label" for="fbEmail">이메일</label>
+            <input type="email" id="fbEmail" class="fb-form-input" placeholder="example@email.com" maxlength="255">
+          </div>
+
+          <div class="fb-form-group">
+            <label class="fb-form-label" for="fbTitle">제목<span class="required">*</span></label>
+            <input type="text" id="fbTitle" class="fb-form-input" placeholder="요청 제목을 입력해주세요" required maxlength="300">
+          </div>
+
+          <div class="fb-form-group">
+            <label class="fb-form-label">카테고리<span class="required">*</span></label>
+            <div class="fb-category-group" id="fbCategoryGroup">
+              <button type="button" class="fb-cat-btn selected" data-value="기타"><i class="fa-solid fa-ellipsis"></i><br>기타</button>
+              <button type="button" class="fb-cat-btn" data-value="제품등록"><i class="fa-solid fa-box-open"></i><br>팀원등록요청</button>
+              <button type="button" class="fb-cat-btn" data-value="기능추가"><i class="fa-solid fa-plus-circle"></i><br>기능추가</button>
+              <button type="button" class="fb-cat-btn" data-value="버그신고"><i class="fa-solid fa-bug"></i><br>버그신고</button>
+            </div>
+          </div>
+
+          <div class="fb-form-group">
+            <label class="fb-form-label" for="fbContent">요청 내용<span class="required">*</span></label>
+            <textarea id="fbContent" class="fb-form-textarea" placeholder="상세한 요청 내용을 적어주세요."></textarea>
+          </div>
+
+          <button type="submit" class="fb-form-submit" id="fbSubmitBtn">
+            <i class="fa-solid fa-paper-plane"></i>
+            <span>요청 등록하기</span>
+          </button>
+        </form>
+
+        <div class="feedback-success-msg" id="fbSuccessMsg" style="display:none;">
+          <i class="fa-solid fa-circle-check"></i>
+          <h4>요청이 등록되었습니다!</h4>
+          <p>소중한 의견 감사드립니다. 확인 후 빠른 시일 내에 검토하겠습니다.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="assets/app.js?v=12"></script>
+</body>
+</html>
