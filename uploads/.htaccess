@@ -1,0 +1,10 @@
+# 업로드된 파일은 정적 HTML로만 서비스하고 스크립트 실행은 막습니다.
+<IfModule mod_php7.c>
+    php_flag engine off
+</IfModule>
+<IfModule mod_php.c>
+    php_flag engine off
+</IfModule>
+<FilesMatch "\.(php|phtml|php[0-9]|pl|py|cgi|sh)$">
+    Require all denied
+</FilesMatch>
